@@ -19,7 +19,8 @@ The number of Small side is less than 4, there is no theoretical win condition, 
 Or one of the two sides surrenders.
 
 # Features
-surrender
-regret
-Reopen
-A simple Socket online implementation, the IP is set to the default local IP (127.0.0.1)
+surrender;
+regret;
+Reopen;
+A simple Socket online implementation, the IP is set to the default local IP (127.0.0.1);
+A simple GameAI algorithm.
