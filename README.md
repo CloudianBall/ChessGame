@@ -20,7 +20,11 @@ Or one of the two sides surrenders.
 
 # Features
 surrender;
+
 regret;
+
 Reopen;
+
 A simple Socket online implementation, the IP is set to the default local IP (127.0.0.1);
+
 A simple GameAI algorithm.
