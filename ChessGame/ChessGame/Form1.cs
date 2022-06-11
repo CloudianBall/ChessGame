@@ -29,6 +29,8 @@ namespace ChessGame
         SocketServer server;
         SocketClient client;
         private player_type side;
+        GameAI.GameAI gameAI;
+        private bool isAIUse = false;
         public Form1()
         {
             InitializeComponent();
@@ -70,6 +72,7 @@ namespace ChessGame
             records = new List<Tuple<Chess, Chess>>();
             ControlSide.Text = "Large Control";
             side = player_type.blank;
+            isAIUse = false;
             for (int i = 0; i < 5; i++)
             {
                 Chesses[i] = new Chess[5];
@@ -125,6 +128,10 @@ namespace ChessGame
             {
                 return;
             }
+            if (side != control_side && isAIUse) 
+            {
+                return;
+            }
             ButtonXY button = sender as ButtonXY;
             int count = SmallPieceCount;
             if(selectedStatus)
@@ -141,13 +148,17 @@ namespace ChessGame
                             control_side = control_side == player_type.great ? player_type.little : player_type.great;
                         SetControlSideText();
                     }
-                    if(count != SmallPieceCount)
-                    {
-                        SmallCount.Text = "Small X " + SmallPieceCount;
-                    }
                     if(server != null || client != null)
                     {
                         SendMsg(player_action.DoMove);
+                    }
+                    if(isAIUse)
+                    {
+                        DoAIMove();
+                    }
+                    if (count != SmallPieceCount)
+                    {
+                        SmallCount.Text = "Small X " + SmallPieceCount;
                     }
                 }
                 else
@@ -170,6 +181,28 @@ namespace ChessGame
                 }
                 else
                     selectedStatus = false;
+            }
+        }
+
+        private void DoAIMove()
+        {
+            if (records.Count > 0)
+                gameAI.UpdateBoard(records.Last());
+            chess_type type = gameAI.AiSide == player_type.great ? chess_type.big : chess_type.small;
+            GameAI.Step aiMove = gameAI.CalcBestStep(type, 2, false);
+            if (aiMove.type == Chesses[aiMove.SourcePos.X][aiMove.SourcePos.Y].type && aiMove.type != chess_type.blank)
+            {
+                if (Chesses[aiMove.SourcePos.X][aiMove.SourcePos.Y].Move_judge(Chesses[aiMove.TargetPos.X][aiMove.TargetPos.Y].PB, aiMove.SourcePos.X, aiMove.SourcePos.Y, Chesses))
+                {
+                    Win_Judge();
+                    // Rotate control
+                    if (!isOver)
+                    {
+                        control_side = control_side == player_type.great ? player_type.little : player_type.great;
+                        SetControlSideText();
+                        gameAI.UpdateBoard(records.Last());
+                    }
+                }
             }
         }
 
@@ -296,8 +329,8 @@ namespace ChessGame
                 if (server != null || client != null)
                 {
                     SendMsg(player_action.DoMove);
+                    CloseHost();
                 }
-                CloseHost();
             }
         }
 
@@ -492,6 +525,23 @@ namespace ChessGame
             CreateServer.Enabled = true;
             CreateClient.Enabled = true;
             ExitHost.Enabled = false;
+        }
+
+        private void SelectBig_Click(object sender, EventArgs e)
+        {
+            ResetRegion();
+            side = player_type.great;
+            gameAI = new GameAI.GameAI(5, 5, 2, player_type.little);
+            isAIUse = true;
+        }
+
+        private void SelectSmall_Click(object sender, EventArgs e)
+        {
+            ResetRegion();
+            side = player_type.little;
+            gameAI = new GameAI.GameAI(5, 5, 2, player_type.great);
+            isAIUse = true;
+            DoAIMove();
         }
     }
 }

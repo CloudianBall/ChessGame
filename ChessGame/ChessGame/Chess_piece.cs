@@ -52,6 +52,8 @@ namespace ChessGame
                         }
                         else if (Math.Abs(button.Y - Y) == 2 && checkerboard[button.X][button.Y].type == chess_type.small)
                         {
+                            if (checkerboard[X][(button.Y + Y) / 2].type != chess_type.blank)
+                                break;
                             Form1.records.Add(
                                 Tuple.Create<Chess, Chess>(
                                     new Chess_piece(checkerboard[X][Y].type, checkerboard[X][Y].side, new ButtonXY(X, Y) { Text = "L" }),
@@ -78,6 +80,8 @@ namespace ChessGame
                         }
                         else if (Math.Abs(button.X - X) == 2 && checkerboard[button.X][button.Y].type == chess_type.small)
                         {
+                            if (checkerboard[(button.X + X) / 2][Y].type != chess_type.blank)
+                                break;
                             Form1.records.Add(
                                 Tuple.Create<Chess, Chess>(
                                     new Chess_piece(checkerboard[X][Y].type, checkerboard[X][Y].side, new ButtonXY(X, Y) { Text = "L" }),
