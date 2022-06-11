@@ -46,6 +46,8 @@
             this.CreateClient = new System.Windows.Forms.Button();
             this.TalkBox = new System.Windows.Forms.RichTextBox();
             this.ExitHost = new System.Windows.Forms.Button();
+            this.SelectBig = new System.Windows.Forms.Button();
+            this.SelectSmall = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ChessPanel
@@ -155,11 +157,33 @@
             this.ExitHost.UseVisualStyleBackColor = true;
             this.ExitHost.Click += new System.EventHandler(this.ExitHost_Click);
             // 
+            // SelectBig
+            // 
+            this.SelectBig.Location = new System.Drawing.Point(497, 3);
+            this.SelectBig.Name = "SelectBig";
+            this.SelectBig.Size = new System.Drawing.Size(75, 23);
+            this.SelectBig.TabIndex = 10;
+            this.SelectBig.Text = "选择大";
+            this.SelectBig.UseVisualStyleBackColor = true;
+            this.SelectBig.Click += new System.EventHandler(this.SelectBig_Click);
+            // 
+            // SelectSmall
+            // 
+            this.SelectSmall.Location = new System.Drawing.Point(578, 3);
+            this.SelectSmall.Name = "SelectSmall";
+            this.SelectSmall.Size = new System.Drawing.Size(75, 23);
+            this.SelectSmall.TabIndex = 10;
+            this.SelectSmall.Text = "选择小";
+            this.SelectSmall.UseVisualStyleBackColor = true;
+            this.SelectSmall.Click += new System.EventHandler(this.SelectSmall_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.SelectSmall);
+            this.Controls.Add(this.SelectBig);
             this.Controls.Add(this.ExitHost);
             this.Controls.Add(this.TalkBox);
             this.Controls.Add(this.CreateClient);
@@ -189,6 +213,8 @@
         private System.Windows.Forms.Button CreateClient;
         private System.Windows.Forms.RichTextBox TalkBox;
         private System.Windows.Forms.Button ExitHost;
+        private System.Windows.Forms.Button SelectBig;
+        private System.Windows.Forms.Button SelectSmall;
     }
 }
 
