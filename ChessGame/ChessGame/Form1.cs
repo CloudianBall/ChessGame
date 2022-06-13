@@ -189,7 +189,7 @@ namespace ChessGame
             if (records.Count > 0)
                 gameAI.UpdateBoard(records.Last());
             chess_type type = gameAI.AiSide == player_type.great ? chess_type.big : chess_type.small;
-            GameAI.Step aiMove = gameAI.CalcBestStep(type, 2, false);
+            GameAI.Step aiMove = gameAI.CalcBestStep(type, 3, false);
             if (aiMove.type == Chesses[aiMove.SourcePos.X][aiMove.SourcePos.Y].type && aiMove.type != chess_type.blank)
             {
                 if (Chesses[aiMove.SourcePos.X][aiMove.SourcePos.Y].Move_judge(Chesses[aiMove.TargetPos.X][aiMove.TargetPos.Y].PB, aiMove.SourcePos.X, aiMove.SourcePos.Y, Chesses))
@@ -531,7 +531,7 @@ namespace ChessGame
         {
             ResetRegion();
             side = player_type.great;
-            gameAI = new GameAI.GameAI(5, 5, 2, player_type.little);
+            gameAI = new GameAI.GameAI(5, 5, 3, player_type.little);
             isAIUse = true;
         }
 
@@ -539,7 +539,7 @@ namespace ChessGame
         {
             ResetRegion();
             side = player_type.little;
-            gameAI = new GameAI.GameAI(5, 5, 2, player_type.great);
+            gameAI = new GameAI.GameAI(5, 5, 3, player_type.great);
             isAIUse = true;
             DoAIMove();
         }
