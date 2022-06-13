@@ -84,9 +84,9 @@ namespace ChessGame.GameAI
         /// A fake Infinity
         /// </summary>
         protected const int INFINITY = 100000;
-        protected const int SMALL_VALUE = 10;
+        protected const int SMALL_VALUE = 20;
         protected const int SMALL_MOVE_VALUE = 5;
-        protected const int BIG_MOVE_VALUE = 20;
+        protected const int BIG_MOVE_VALUE = 10;
 
         public Dictionary<int,Step> MoveLists;
         public Step BestStep;
@@ -212,7 +212,10 @@ namespace ChessGame.GameAI
                 {
                     case chess_type.blank:  // Give priority to the vacancy to which the larger piece can be moved
                         int count = CheckLargePiece(step.TargetPos.X, step.TargetPos.Y);
-                        step.Score = BIG_MOVE_VALUE * count * (1 << AlgorithmDepth) / 10;
+                        if(step.type == chess_type.big)
+                            step.Score = -BIG_MOVE_VALUE * count * (1 << AlgorithmDepth) / 10;
+                        else if(step.type == chess_type.small)
+                            step.Score = BIG_MOVE_VALUE * count * (1 << AlgorithmDepth) / 10;
                         break;
                     case chess_type.small:  // Take the small pieces first
                         step.Score = SMALL_VALUE * (1 << AlgorithmDepth) / 10;
@@ -426,7 +429,11 @@ namespace ChessGame.GameAI
 
         private int AlphaBeta(chess_type type, int depth, int alpha, int beta, Step[] pre_steps)
         {
-            if (depth == 0 || GameOver())
+            if(GameOver())
+            {
+                return -INFINITY;
+            }
+            if (depth == 0)
             {
                 return Evaluation(type, pre_steps);
             }
@@ -495,32 +502,51 @@ namespace ChessGame.GameAI
                 for (int j = 0; j < Y; j++)
                 {
                     VirtualChess chess = board[i][j];
-                    if(chess.type != chess_type.blank)
+                    int temp_score = 0;
+                    List<Step> moves = new List<Step>();
+                    int count = 0;
+                    switch(chess.type)
                     {
-                        int temp_score = 0;
-                        List<Step> moves = new List<Step>();
-                        int count = 0;
-                        switch(chess.type)
+                        case chess_type.big:
+                            temp_score = 0; // Need not set Big Piece value because of it can't be eat by Small Piece.
+                            count = GenerateMoveBig(i, j, chess_type.big, moves);
+                            temp_score += count * BIG_MOVE_VALUE;
+                            break;
+                        case chess_type.small:
+                            temp_score = SMALL_VALUE;
+                            count = GenerateMoveSmall(i, j, chess_type.small, moves);
+                            temp_score += count * SMALL_MOVE_VALUE;
+                            break;
+                        case chess_type.blank:
+                            temp_score = 0;
+                            count = CheckLargePiece(i, j);
+                            temp_score += count * BIG_MOVE_VALUE;
+                            break;
+                    }
+                    if(chess.type == type)
+                    {
+                        score += temp_score;
+                    }
+                    else if(chess.type != type && chess.type != chess_type.blank)
+                    {
+                        score -= temp_score;
+                    }
+                    else
+                    {
+                        switch(type)
                         {
                             case chess_type.big:
-                                temp_score = 0; // Need not set Big Piece value because of it can't be eat by Small Piece.
-                                count = GenerateMoveBig(i, j, chess_type.big, moves);
-                                temp_score += count * BIG_MOVE_VALUE;
+                                if (count == 1)
+                                    score += temp_score;
+                                else if (count > 1 && count <= 3)
+                                    score -= temp_score;
                                 break;
                             case chess_type.small:
-                                temp_score = SMALL_VALUE;
-                                count = GenerateMoveSmall(i, j, chess_type.small, moves);
-                                temp_score += count * SMALL_MOVE_VALUE;
+                                if (count == 1)
+                                    score -= temp_score;
+                                else if (count > 1 && count <= 3)
+                                    score += temp_score;
                                 break;
-
-                        }
-                        if(chess.type == type)
-                        {
-                            score += temp_score;
-                        }
-                        else
-                        {
-                            score -= temp_score;
                         }
                     }
                 }
