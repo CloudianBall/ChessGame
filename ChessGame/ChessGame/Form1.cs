@@ -386,6 +386,10 @@ namespace ChessGame
             {
                 SendMsg(player_action.DoRegret);
             }
+            if (isAIUse)
+            {
+                gameAI.InitBoard();
+            }
         }
 
         private void CreateServer_Click(object sender, EventArgs e)
