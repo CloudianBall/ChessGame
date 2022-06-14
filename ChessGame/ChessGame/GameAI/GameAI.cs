@@ -138,7 +138,7 @@ namespace ChessGame.GameAI
             InitBoard();
         }
 
-        private void InitBoard()
+        public void InitBoard()
         {
             board = new VirtualChess[this.X][];
             for (int i = 0; i < this.X; i++)
